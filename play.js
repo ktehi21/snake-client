@@ -1,48 +1,19 @@
 const {connect} = require("./client");
-console.log("connect");
-const playConn = connect();
+const {setupInput} = require("./input");
 
-// setup interface to handle user input from stdin
-const handleUserInput = (key) => { 
-  console.log("key: ", key);
-  if (key === '\u0003') {
-    console.log("BYE");
-    process.exit();
-  }
-  if (key === 'w') {
-    playConn.write("Move: up");
-    // console.log("w is up command");
-  }
-  if (key === 'd') {
-    playConn.write("Move: right");
-    // console.log("d is up command");
-  }
-  if (key === 's') {
-    playConn.write("Move: down");
-    // console.log("s is up command");
-  }
-  if (key === 'a') {
-    playConn.write("Move: left");
-    // console.log("a is up command");
-  }
-};
+console.log("Connecting ...");
+connect();
 
-const setupInput = function () {
-  // get the key what client pressed
-  const stdin = process.stdin;
-  stdin.setRawMode(true);
-  stdin.setEncoding("utf8");
-  stdin.resume();
-
-  // THAT KEY is key => call handleUserInput(key)
-  stdin.on("key", handleUserInput);
-
-  return stdin;
-};
 setupInput();
 
 
 /* 
+  (RUN)
+  1. ngrok tcp 3000 (terminal 1)
+  2. play.js inside snek-mulitplayer (terminal2)
+  3. play.js inside snake-client (terminal3)
+  vagrant/week2/snake-client/snek-multiplayer
+
   (client.js) 
   1. bring the net
   2. make the connect = function(){}
@@ -60,11 +31,6 @@ setupInput();
   2. check the connection using console.log
   3. call the connect();
 
-  (RUN)
-  1. ngrok tcp 3000 (terminal 1)
-  2. play.js inside snek-mulitplayer (terminal2)
-  3. play.js inside snake-client (terminal3)
-  vagrant/week2/snake-client/snek-multiplayer
 
 
   ----------
@@ -79,17 +45,28 @@ setupInput();
     stdin.resume();
 
   2. CTRL+C key for exit : using handleUserInput function
-    // THAT KEY is key => call : handleUserInput(key)
-    stdin.on("key", handleUserInput);
+    // THAT KEY is data => call : handleUserInput(key)
+    HAVE TO USE "data", cause we need this data
+    to server side. 
+    data is the key value
+    stdin.on("data", handleUserInput);
 
     return stdin;
   };
   3. Call the setupInput(); When the client connected
   setupInput();
 
-  4. Move the function to index.js 
-  and require("index.js")
+  4. Move the function to input.js 
+  and require("input.js")
 
   ------------
-
+(input.js)
+  1. export setupInput only
+  - handleUserInput is only called by setupInput 
+    which is already in the same file. 
+    Since handleUserInput does not 
+    need to be called or referenced elsewhere, 
+    it does not need to be exported 
+    from the input module.
+  
 */  
