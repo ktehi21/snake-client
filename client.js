@@ -9,12 +9,16 @@ const connect = function () {
   conn.on("connect", () => {
     console.log("Succesfully connected!");
     conn.write("Name: KIM");
-
+    conn.write("Say: ORANGE");
   });
 
   conn.on("data", (data) => {
-    console.log("Move: up");
+    console.log(data);
   });
+
   return conn;
 };
 module.exports = {connect};
+
+// ^[[A ^[[C ^[[B ^[[D
+// w s d a (up down right left)
